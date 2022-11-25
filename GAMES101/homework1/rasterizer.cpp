@@ -1,13 +1,4 @@
-//
-// Created by goksu on 4/6/19.
-//
-
-#include <algorithm>
 #include "rasterizer.hpp"
-#include <opencv2/opencv.hpp>
-#include <math.h>
-#include <stdexcept>
-
 
 rst::pos_buf_id rst::rasterizer::load_positions(const std::vector<Eigen::Vector3f> &positions)
 {
@@ -224,11 +215,6 @@ rst::rasterizer::rasterizer(int w, int h) : width(w), height(h)
 {
     frame_buf.resize(w * h);
     depth_buf.resize(w * h);
-}
-
-int rst::rasterizer::get_index(int x, int y)
-{
-    return (height-y)*width + x;
 }
 
 void rst::rasterizer::set_pixel(const Eigen::Vector3f& point, const Eigen::Vector3f& color)

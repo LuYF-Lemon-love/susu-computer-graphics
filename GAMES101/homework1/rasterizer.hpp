@@ -1,13 +1,11 @@
-//
-// Created by goksu on 4/6/19.
-//
-
 #pragma once
 
 #include "Triangle.hpp"
 #include <algorithm>
 #include <eigen3/Eigen/Eigen>
-using namespace Eigen;
+#include <opencv2/opencv.hpp>
+#include <math.h>
+#include <stdexcept>
 
 namespace rst {
 enum class Buffers
@@ -32,11 +30,6 @@ enum class Primitive
     Triangle
 };
 
-/*
- * For the curious : The draw function takes two buffer id's as its arguments.
- * These two structs make sure that if you mix up with their orders, the
- * compiler won't compile it. Aka : Type safety
- * */
 struct pos_buf_id
 {
     int pos_id = 0;
@@ -82,7 +75,6 @@ class rasterizer
 
     std::vector<Eigen::Vector3f> frame_buf;
     std::vector<float> depth_buf;
-    int get_index(int x, int y);
 
     int width, height;
 
