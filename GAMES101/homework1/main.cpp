@@ -1,23 +1,10 @@
 #include "Triangle.hpp"
 #include "rasterizer.hpp"
 #include <eigen3/Eigen/Eigen>
-#include <iostream>
 #include <opencv2/opencv.hpp>
+#include <iostream>
 
 constexpr double MY_PI = 3.1415926;
-
-Eigen::Matrix4f get_view_matrix(Eigen::Vector3f eye_pos)
-{
-    Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
-
-    Eigen::Matrix4f translate;
-    translate << 1, 0, 0, -eye_pos[0], 0, 1, 0, -eye_pos[1], 0, 0, 1,
-        -eye_pos[2], 0, 0, 0, 1;
-
-    view = translate * view;
-
-    return view;
-}
 
 Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
@@ -32,6 +19,21 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
     model(1, 0) = sin(angle);
     model(1, 1) = cos(angle);
     return model;
+}
+
+Eigen::Matrix4f get_view_matrix(Eigen::Vector3f eye_pos)
+{
+    Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
+
+    Eigen::Matrix4f translate;
+    translate << 1, 0, 0, -eye_pos[0],
+                 0, 1, 0, -eye_pos[1],
+                 0, 0, 1, -eye_pos[2],
+                 0, 0, 0, 1;
+
+    view = translate * view;
+
+    return view;
 }
 
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
@@ -73,7 +75,7 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     return projection;
 }
 
-Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {//任意轴旋转矩阵（罗德里格斯旋转公式，默认轴过原点）
+Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {
     double fangle = angle / 180 * MY_PI;
     Eigen::Matrix4f I, N, Rod;
     Eigen::Vector4f axi;
@@ -82,10 +84,7 @@ Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {//任意轴旋转矩�
     axi << axis.x(), axis.y(), axis.z(), 0;
     taxi << axis.x(), axis.y(), axis.z(), 0;
 
-    I << 1, 0, 0, 0,
-         0, 1, 0, 0,
-         0, 0, 1, 0,
-         0, 0, 0, 1;
+    I = Eigen::Matrix4f::Identity();
 
     N << 0, -axis.z(), axis.y(), 0,
          axis.z(), 0, -axis.x(), 0,
@@ -93,7 +92,7 @@ Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {//任意轴旋转矩�
          0, 0, 0, 1;
     
     Rod = cos(fangle) * I + (1 - cos(fangle)) * axi * taxi + sin(fangle) * N;
-    Rod(3, 3) = 1;//这里要注意，非齐次坐标的公式应用在齐次坐标上时记得运算完成后把矩阵的右下角改为1，否则会导致图形比例错误
+    Rod(3, 3) = 1;
     return Rod;
 }
 
