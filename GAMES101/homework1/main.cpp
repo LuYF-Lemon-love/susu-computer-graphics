@@ -76,13 +76,13 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
 }
 
 Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {
-    double fangle = angle / 180 * MY_PI;
+    double rad_angle = angle / 180 * MY_PI;
     Eigen::Matrix4f I, N, Rod;
-    Eigen::Vector4f axi;
-    Eigen::RowVector4f taxi;
+    Eigen::Vector4f axis_4f;
+    Eigen::RowVector4f axis_row;
 
-    axi << axis.x(), axis.y(), axis.z(), 0;
-    taxi << axis.x(), axis.y(), axis.z(), 0;
+    axis_4f << axis.x(), axis.y(), axis.z(), 0;
+    axis_row << axis.x(), axis.y(), axis.z(), 0;
 
     I = Eigen::Matrix4f::Identity();
 
@@ -91,7 +91,7 @@ Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {
          -axis.y(), axis.x(), 0, 0,
          0, 0, 0, 1;
     
-    Rod = cos(fangle) * I + (1 - cos(fangle)) * axi * taxi + sin(fangle) * N;
+    Rod = cos(rad_angle) * I + (1 - cos(rad_angle)) * axis_4f * axis_row + sin(rad_angle) * N;
     Rod(3, 3) = 1;
     return Rod;
 }
@@ -101,9 +101,6 @@ int main(int argc, const char** argv)
     float angle = 0;
     bool command_line = false;
     std::string filename = "output.png";
-
-    Eigen::Vector3f raxis(0, 0, 1);
-    double rangle = 0, ra;
 
     if (argc >= 3) {
         command_line = true;
@@ -126,9 +123,6 @@ int main(int argc, const char** argv)
     auto pos_id = r.load_positions(pos);
     auto ind_id = r.load_indices(ind);
 
-    int key = 0;
-    int frame_count = 0;
-
     if (command_line) {
         r.clear(rst::Buffers::Color | rst::Buffers::Depth);
 
@@ -146,9 +140,13 @@ int main(int argc, const char** argv)
     }
 
     bool rflag = false;
+    Eigen::Vector3f axis(0, 0, 1);
+    double angle_axis = 0, d_angle;
+    int key = 0;
+    int frame_count = 0;
 
     std::cout << "Please enter the axis and angle:" << std::endl;
-    std::cin >> raxis.x() >> raxis.y() >> raxis.z() >> ra;//定义罗德里格斯旋转轴和角
+    std::cin >> axis.x() >> axis.y() >> axis.z() >> d_angle;
 
     while (key != 27) {
         r.clear(rst::Buffers::Color | rst::Buffers::Depth);
@@ -157,8 +155,8 @@ int main(int argc, const char** argv)
         r.set_view(get_view_matrix(eye_pos));
         r.set_projection(get_projection_matrix(45, 1, 0.1, 50));
 
-        if (rflag) //如果按下r了，就开始绕给定任意轴旋转
-            r.set_rodrigues(get_rotation(raxis, rangle));
+        if (rflag)
+            r.set_rodrigues(get_rotation(axis, angle_axis));
         else
             r.set_rodrigues(get_rotation({ 0,0,1 }, 0));
 
@@ -177,9 +175,10 @@ int main(int argc, const char** argv)
         else if (key == 'd') {
             angle -= 10;
         }
-        else if (key == 'r') {//按下r，绕给定任意轴旋转
+        else if (key == 'r') {
+            //按下r，绕给定任意轴旋转
             rflag = true;
-            rangle += ra;
+            angle_axis += d_angle;
         }
     }
 
