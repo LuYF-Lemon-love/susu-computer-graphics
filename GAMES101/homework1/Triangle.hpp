@@ -5,7 +5,6 @@
 #include <array>
 #include <stdexcept>
 
-using namespace Eigen;
 class Triangle
 {
 public:

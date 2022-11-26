@@ -6,7 +6,7 @@
 
 constexpr double MY_PI = 3.1415926;
 
-Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {
+Eigen::Matrix4f get_rotation(Eigen::Vector3f axis, float angle) {
     double rad_angle = angle / 180 * MY_PI;
     Eigen::Matrix4f I, N, Rod;
     Eigen::Vector4f axis_4f;
