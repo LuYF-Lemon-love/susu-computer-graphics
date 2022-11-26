@@ -132,7 +132,7 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buffer, rst::ind_buf_id ind_buffe
     float f1 = (100 - 0.1) / 2.0;
     float f2 = (100 + 0.1) / 2.0;
 
-    Eigen::Matrix4f mvp = projection * view * model * rodrigues;//计算mvp矩阵，因为绕任意轴旋转也是模型变换的一种，所以放在model矩阵的相邻位置
+    Eigen::Matrix4f mvp = projection * view * model * rodrigues;
     for (auto& i : ind)
     {
         Triangle t;
@@ -149,8 +149,8 @@ void rst::rasterizer::draw(rst::pos_buf_id pos_buffer, rst::ind_buf_id ind_buffe
 
         for (auto & vert : v)
         {
-            vert.x() = 0.5*width*(vert.x()+1.0);
-            vert.y() = 0.5*height*(vert.y()+1.0);
+            vert.x() = 0.5 * width * (vert.x() + 1.0);
+            vert.y() = 0.5 * height * (vert.y() + 1.0);
             vert.z() = vert.z() * f1 + f2;
         }
 
@@ -174,6 +174,11 @@ void rst::rasterizer::rasterize_wireframe(const Triangle& t)
     draw_line(t.b(), t.a());
 }
 
+void rst::rasterizer::set_rodrigues(const Eigen::Matrix4f& r)
+{
+    rodrigues = r;
+}
+
 void rst::rasterizer::set_model(const Eigen::Matrix4f& m)
 {
     model = m;
@@ -187,11 +192,6 @@ void rst::rasterizer::set_view(const Eigen::Matrix4f& v)
 void rst::rasterizer::set_projection(const Eigen::Matrix4f& p)
 {
     projection = p;
-}
-
-void rst::rasterizer::set_rodrigues(const Eigen::Matrix4f& r)
-{
-    rodrigues = r;
 }
 
 void rst::rasterizer::clear(rst::Buffers buff)
@@ -214,10 +214,9 @@ rst::rasterizer::rasterizer(int w, int h) : width(w), height(h)
 
 void rst::rasterizer::set_pixel(const Eigen::Vector3f& point, const Eigen::Vector3f& color)
 {
-    //old index: auto ind = point.y() + point.x() * width;
     if (point.x() < 0 || point.x() >= width ||
         point.y() < 0 || point.y() >= height) return;
-    auto ind = (height-point.y())*width + point.x();
+    auto ind = (height - point.y()) * width + point.x();
     frame_buf[ind] = color;
 }
 

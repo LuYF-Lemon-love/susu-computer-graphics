@@ -6,6 +6,27 @@
 
 constexpr double MY_PI = 3.1415926;
 
+Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {
+    double rad_angle = angle / 180 * MY_PI;
+    Eigen::Matrix4f I, N, Rod;
+    Eigen::Vector4f axis_4f;
+    Eigen::RowVector4f axis_row;
+
+    axis_4f << axis.x(), axis.y(), axis.z(), 0;
+    axis_row << axis.x(), axis.y(), axis.z(), 0;
+
+    I = Eigen::Matrix4f::Identity();
+
+    N << 0, -axis.z(), axis.y(), 0,
+         axis.z(), 0, -axis.x(), 0,
+         -axis.y(), axis.x(), 0, 0,
+         0, 0, 0, 1;
+    
+    Rod = cos(rad_angle) * I + (1 - cos(rad_angle)) * axis_4f * axis_row + sin(rad_angle) * N;
+    Rod(3, 3) = 1;
+    return Rod;
+}
+
 Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
     Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
@@ -73,27 +94,6 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     projection = scale * translate * perspective * projection;
 
     return projection;
-}
-
-Eigen::Matrix4f get_rotation(Vector3f axis, float angle) {
-    double rad_angle = angle / 180 * MY_PI;
-    Eigen::Matrix4f I, N, Rod;
-    Eigen::Vector4f axis_4f;
-    Eigen::RowVector4f axis_row;
-
-    axis_4f << axis.x(), axis.y(), axis.z(), 0;
-    axis_row << axis.x(), axis.y(), axis.z(), 0;
-
-    I = Eigen::Matrix4f::Identity();
-
-    N << 0, -axis.z(), axis.y(), 0,
-         axis.z(), 0, -axis.x(), 0,
-         -axis.y(), axis.x(), 0, 0,
-         0, 0, 0, 1;
-    
-    Rod = cos(rad_angle) * I + (1 - cos(rad_angle)) * axis_4f * axis_row + sin(rad_angle) * N;
-    Rod(3, 3) = 1;
-    return Rod;
 }
 
 int main(int argc, const char** argv)
