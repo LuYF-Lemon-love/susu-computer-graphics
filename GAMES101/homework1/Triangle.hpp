@@ -1,22 +1,20 @@
-//
-// Created by LEI XU on 4/11/19.
-//
-
 #ifndef RASTERIZER_TRIANGLE_H
 #define RASTERIZER_TRIANGLE_H
 
 #include <eigen3/Eigen/Eigen>
+#include <algorithm>
+#include <array>
+#include <stdexcept>
 
 using namespace Eigen;
 class Triangle
 {
-  public:
-    Vector3f v[3]; /*the original coordinates of the triangle, v0, v1, v2 in
-                      counter clockwise order*/
-    /*Per vertex values*/
-    Vector3f color[3];      // color at each vertex;
-    Vector2f tex_coords[3]; // texture u,v
-    Vector3f normal[3];     // normal vector for each vertex
+public:
+    Eigen::Vector3f v[3];
+
+    Eigen::Vector3f color[3];      // color at each vertex;
+    Eigen::Vector2f tex_coords[3]; // texture u,v
+    Eigen::Vector3f normal[3];     // normal vector for each vertex
 
     // Texture *tex;
     Triangle();

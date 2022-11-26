@@ -42,7 +42,7 @@ struct ind_buf_id
 
 class rasterizer
 {
-  public:
+public:
     rasterizer(int w, int h);
     pos_buf_id load_positions(const std::vector<Eigen::Vector3f>& positions);
     ind_buf_id load_indices(const std::vector<Eigen::Vector3i>& indices);
@@ -60,11 +60,11 @@ class rasterizer
 
     std::vector<Eigen::Vector3f>& frame_buffer() { return frame_buf; }
 
-  private:
+private:
     void draw_line(Eigen::Vector3f begin, Eigen::Vector3f end);
     void rasterize_wireframe(const Triangle& t);
 
-  private:
+private:
     Eigen::Matrix4f model;
     Eigen::Matrix4f view;
     Eigen::Matrix4f projection;
