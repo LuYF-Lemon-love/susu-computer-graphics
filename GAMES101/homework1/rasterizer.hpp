@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Triangle.hpp"
-#include <algorithm>
 #include <eigen3/Eigen/Eigen>
 #include <opencv2/opencv.hpp>
 #include <math.h>
+#include <algorithm>
 #include <stdexcept>
 
 namespace rst {

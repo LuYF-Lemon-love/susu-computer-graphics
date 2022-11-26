@@ -1,8 +1,8 @@
 #pragma once
 
 #include <eigen3/Eigen/Eigen>
-#include <algorithm>
 #include <array>
+#include <algorithm>
 #include <stdexcept>
 
 class Triangle
