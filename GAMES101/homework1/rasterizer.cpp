@@ -25,38 +25,38 @@ void rst::rasterizer::draw_line(Eigen::Vector3f begin, Eigen::Vector3f end)
 
     Eigen::Vector3f line_color = {255, 255, 255};
 
-    int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
+    int x, y, dx, dy, dx_fabs, dy_fabs, px, py, x_end, y_end, i;
 
     dx = x2 - x1;
-    dy= y2 - y1;
-    dx1 = fabs(dx);
-    dy1 = fabs(dy);
-    px = 2 * dy1 - dx1;
-    py = 2 * dx1 - dy1;
+    dy = y2 - y1;
+    dx_fabs = fabs(dx);
+    dy_fabs = fabs(dy);
+    px = 2 * dy_fabs - dx_fabs;
+    py = 2 * dx_fabs - dy_fabs;
 
-    if(dy1 <= dx1)
+    if(dy_fabs <= dx_fabs)
     {
         if(dx >= 0)
         {
             x = x1;
             y = y1;
-            xe = x2;
+            x_end = x2;
         }
         else
         {
             x = x2;
             y = y2;
-            xe = x1;
+            x_end = x1;
         }
 
         Eigen::Vector3f point = Eigen::Vector3f(x, y, 1.0f);
-        set_pixel(point,line_color);
-        for(i = 0;x < xe; i++)
+        set_pixel(point, line_color);
+        for(i = 0; x < x_end; i++)
         {
-            x = x+1;
+            x = x + 1;
             if(px < 0)
             {
-                px = px + 2 * dy1;
+                px = px + 2 * dy_fabs;
             }
             else
             {
@@ -68,49 +68,49 @@ void rst::rasterizer::draw_line(Eigen::Vector3f begin, Eigen::Vector3f end)
                 {
                     y = y - 1;
                 }
-                px = px + 2 * (dy1 - dx1);
+                px = px + 2 * (dy_fabs - dx_fabs);
             }
             Eigen::Vector3f point = Eigen::Vector3f(x, y, 1.0f);
-            set_pixel(point,line_color);
+            set_pixel(point, line_color);
         }
     }
     else
     {
-        if(dy>=0)
+        if(dy >= 0)
         {
-            x=x1;
-            y=y1;
-            ye=y2;
+            x = x1;
+            y = y1;
+            y_end = y2;
         }
         else
         {
-            x=x2;
-            y=y2;
-            ye=y1;
+            x = x2;
+            y = y2;
+            y_end = y1;
         }
         Eigen::Vector3f point = Eigen::Vector3f(x, y, 1.0f);
         set_pixel(point,line_color);
-        for(i=0;y<ye;i++)
+        for(i = 0; y < y_end; i++)
         {
-            y=y+1;
-            if(py<=0)
+            y = y + 1;
+            if(py <= 0)
             {
-                py=py+2*dx1;
+                py = py + 2 * dx_fabs;
             }
             else
             {
-                if((dx<0 && dy<0) || (dx>0 && dy>0))
+                if((dx < 0 && dy < 0) || (dx > 0 && dy > 0))
                 {
-                    x=x+1;
+                    x = x + 1;
                 }
                 else
                 {
-                    x=x-1;
+                    x = x - 1;
                 }
-                py=py+2*(dx1-dy1);
+                py = py + 2 * (dx_fabs - dy_fabs);
             }
             Eigen::Vector3f point = Eigen::Vector3f(x, y, 1.0f);
-            set_pixel(point,line_color);
+            set_pixel(point, line_color);
         }
     }
 }
